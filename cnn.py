@@ -49,8 +49,8 @@ class CNNModel(nn.Module):
 
         self.flattened_size = self.calculate_flattened_size()
 
-        self.fc1 = nn.Linear(self.flattened_size, 128)  
-        self.fc2 = nn.Linear(128, cnn_embedding_length)  
+        self.fc1 = nn.Linear(self.flattened_size, 256)  
+        self.fc2 = nn.Linear(256, cnn_embedding_length)  
 
     def calculate_flattened_size(self):
         dummy_input = torch.zeros(1, 1, self.cnn_length, 5)
@@ -72,7 +72,8 @@ class CNNModel(nn.Module):
         x = self.pool3(x)              # (batch_size * lstm_length, 64, cnn_length // 8, 5)
 
         x = x.view(batch_size * lstm_length, -1)  # (batch_size * lstm_length, flattened_size)
-        x = torch.relu(self.fc1(x))               # (batch_size * lstm_length, cnn_embedding_length)
+        x = torch.relu(self.fc1(x))               # (batch_size * lstm_length, 256)
+        x = torch.relu(self.fc2(x))               # (batch_size * lstm_length, cnn_embedding_length)
 
         x = x.view(batch_size, lstm_length, self.cnn_embedding_length)
 
