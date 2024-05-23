@@ -49,7 +49,8 @@ class CNNModel(nn.Module):
 
         self.flattened_size = self.calculate_flattened_size()
 
-        self.fc1 = nn.Linear(self.flattened_size, cnn_embedding_length)
+        self.fc1 = nn.Linear(self.flattened_size, 128)  
+        self.fc2 = nn.Linear(128, cnn_embedding_length)  
 
     def calculate_flattened_size(self):
         dummy_input = torch.zeros(1, 1, self.cnn_length, 5)
