@@ -23,16 +23,16 @@ interval = '1h'
 batch_size = 32
 
 
-data = DataSource(
-    symbol=symbol,
-    start_time=start_time,
-    end_time=end_time,
-    interval=interval,
-    trend_length=trend_length,
-    cnn_length=cnn_length,
-    lstm_length=lstm_length,
-    batch_size=batch_size
-)
+# data = DataSource(
+#     symbol=symbol,
+#     start_time=start_time,
+#     end_time=end_time,
+#     interval=interval,
+#     trend_length=trend_length,
+#     cnn_length=cnn_length,
+#     lstm_length=lstm_length,
+#     batch_size=batch_size
+# )
 
 class CNNModel(nn.Module):
     def __init__(self, cnn_length, cnn_embedding_length):
@@ -40,17 +40,17 @@ class CNNModel(nn.Module):
         self.cnn_length = cnn_length
         self.cnn_embedding_length = cnn_embedding_length
 
-        self.conv1 = nn.Conv2d(1, 16, kernel_size=(3, 5), stride=1, padding=(1, 0))
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=(3, 5), stride=1, padding=(1, 0))
         self.pool1 = nn.MaxPool2d(kernel_size=(2, 1), stride=(2, 1))  
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=(3, 1), stride=1, padding=(1, 0))
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=(3, 1), stride=1, padding=(1, 0))
         self.pool2 = nn.MaxPool2d(kernel_size=(2, 1), stride=(2, 1))
-        self.conv3 = nn.Conv2d(32, 64, kernel_size=(3, 1), stride=1, padding=(1, 0))
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=(3, 1), stride=1, padding=(1, 0))
         self.pool3 = nn.MaxPool2d(kernel_size=(2, 1), stride=(2, 1))
 
         self.flattened_size = self.calculate_flattened_size()
 
-        self.fc1 = nn.Linear(self.flattened_size, 256)  
-        self.fc2 = nn.Linear(256, cnn_embedding_length)  
+        self.fc1 = nn.Linear(self.flattened_size, 128)  
+        self.fc2 = nn.Linear(128, cnn_embedding_length)  
 
     def calculate_flattened_size(self):
         dummy_input = torch.zeros(1, 1, self.cnn_length, 5)
@@ -79,13 +79,13 @@ class CNNModel(nn.Module):
 
         return x
 
-cnn_embedding_length = 128
+# cnn_embedding_length = 128
 
-example_input = torch.tensor(data.cnn_data[0], dtype=torch.float32)
+# example_input = torch.tensor(data.cnn_data[0], dtype=torch.float32)
 
-cnn_model = CNNModel(cnn_length, cnn_embedding_length)
+# cnn_model = CNNModel(cnn_length, cnn_embedding_length)
 
-output = cnn_model(example_input)
+# output = cnn_model(example_input)
 
-# Output shape
-print(output.shape)  # Should be (batch_size, lstm_length, cnn_embedding_length)
+# # Output shape
+# print(output.shape)  # Should be (batch_size, lstm_length, cnn_embedding_length)

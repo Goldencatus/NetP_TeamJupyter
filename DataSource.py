@@ -82,10 +82,15 @@ class DataSource:
         self.fromDate = int((datetime.strptime(start_time, '%Y-%m-%d')-timedelta(hours=cnn_length+lstm_length-2)).timestamp() * 1000)
         self.toDate = int((datetime.strptime(end_time, '%Y-%m-%d')-timedelta(hours=1)+timedelta(hours=trend_length-1)).timestamp() * 1000)
         self.stock_data = self.GetDataFrame(self.GetHistoricalData())
-        self.stock_data["Label"] = self.stock_data["Close"].rolling(window=self.trend_length).mean().shift(1 - self.trend_length)
+        self.stock_data["Label"] = self.stock_data["Close"].shift(-self.trend_length)
         self.stock_data=self.stock_data.dropna(axis = 0)
-        self.stock_data["Label"] = 100*(self.stock_data["Label"]-self.stock_data["Close"])/self.stock_data["Close"]
-        self.label = self.stock_data["Label"].to_numpy()
+        '''
+        self.stock_data["Label"] = self.stock_data["Label"] - self.stock_data["Close"]
+        self.stock_data["Label_neg"]  = self.stock_data["Label"] <= 0
+        self.stock_data["Label_pos"]  = self.stock_data["Label"] > 0
+        self.label = self.stock_data[["Label_neg","Label_pos"]].to_numpy()
+        '''
+        self.label = self.stock_data["Label"]
         self.label = self.label[cnn_length+lstm_length-2:]
         self.np_cnn_data = self.stock_data[["Open", "High", "Low", "Close","Volume"]].to_numpy()
         self.np_lstm_data = self.np_cnn_data[self.cnn_length-1:].copy()
