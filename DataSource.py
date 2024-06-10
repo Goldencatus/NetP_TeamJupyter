@@ -93,6 +93,9 @@ class DataSource:
         self.label = self.stock_data["Label"]
         self.label = self.label[cnn_length+lstm_length-2:]
         self.np_cnn_data = self.stock_data[["Open", "High", "Low", "Close","Volume"]].to_numpy()
+        #Batch normalization
+        #self.np_cnn_data = (self.np_cnn_data - self.np_cnn_data.mean(axis=0)) / self.np_cnn_data.std(axis=0)
+        
         self.np_lstm_data = self.np_cnn_data[self.cnn_length-1:].copy()
         self.cnn_data_temp = []
         self.cnn_data = []
